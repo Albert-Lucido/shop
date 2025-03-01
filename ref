@@ -1,0 +1,15 @@
+Create a Shopping Cart System using React Native Expo. Implement proper navigation between screens and context API (for cleaner code).
+
+Requirements:
+- There should be 3 screens: Home, Cart, and Checkout
+
+- The Home Screen contains all the available products. It must also display the product details (e.g. Product Name and Product Price). 
+    There must also be an 'Add to Cart' button beside each product. A 'Go to Cart' button must also be available within the screen. 
+
+- The Cart Screen contains all the added products to the cart. There must be a '+' and '-' button beside each product that has
+    a functionality of adding or reducing/removing product quantity. The item price must also update accordingly.
+    
+- The Checkout Screen contains all the products that have been added to the cart and is for checkout. The correct item prices
+    and total price must be displayed along with the product name. A 'Checkout' button must also be available within the screen.
+    Clicking the 'Checkout' button will display an alert or pop-up that says, 'Checkout successful'. Clicking 'OK' on the alert
+    or pop-up will redirect the user to the Home Screen.
