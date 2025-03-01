@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, Text, Button, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useCart, Product } from './information';
+import { styles } from '../styles'; // Importing styles from the styles.ts file
 
 interface HomeScreenProps {
   navigation: any;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const { addToCart } = useCart();  // Using the custom hook here
+  const { addToCart } = useCart();
 
   const products: Product[] = [
     { id: '1', name: 'Product 1', price: 10, quantity: 0 },
@@ -16,29 +17,24 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   ];
 
   return (
-    <View style={styles.container}>
+    <View style={styles.homeContainer}>
       <FlatList
         data={products}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.product}>
-            <Text>{item.name} - ${item.price}</Text>
-            <Button title="Add to Cart" onPress={() => addToCart(item)} />
+          <View style={styles.homeProduct}>
+            <Text style={styles.homeProductText}>{item.name} - ${item.price}</Text>
+            <TouchableOpacity onPress={() => addToCart(item)} style={styles.homeButton}>
+              <Text style={styles.homeButtonText}>Add to Cart</Text>
+            </TouchableOpacity>
           </View>
         )}
       />
-      <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={styles.cartButton}>
-        <Text style={styles.cartButtonText}>Go to Cart</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={styles.homeCartButton}>
+        <Text style={styles.homeCartButtonText}>Go to Cart</Text>
       </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  product: { marginBottom: 15 },
-  cartButton: { padding: 10, backgroundColor: 'blue', marginTop: 20 },
-  cartButtonText: { color: 'white', textAlign: 'center' },
-});
 
 export default HomeScreen;

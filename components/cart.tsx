@@ -1,30 +1,37 @@
 import React from 'react';
-import { View, Text, Button, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Button, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useCart, Product } from './information';
+import { styles } from '../styles'; // Importing styles from the styles.ts file
 
 interface CartScreenProps {
   navigation: any;
 }
 
 const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
-  const { cart, updateQuantity, removeFromCart } = useCart();  // Using the custom hook here
+  const { cart, updateQuantity, removeFromCart } = useCart();
 
   const calculateTotal = (): number => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.cartContainer}>
       <FlatList
         data={cart}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.product}>
-            <Text>{item.name} - ${item.price} x {item.quantity}</Text>
-            <View style={styles.quantityControls}>
-              <Button title="+" onPress={() => updateQuantity(item.id, 'increase')} />
-              <Button title="-" onPress={() => updateQuantity(item.id, 'decrease')} />
-              <Button title="Remove" onPress={() => removeFromCart(item.id)} />
+          <View style={styles.cartProduct}>
+            <Text style={styles.cartProductText}>{item.name} - ${item.price} x {item.quantity}</Text>
+            <View style={styles.cartControls}>
+              <TouchableOpacity onPress={() => updateQuantity(item.id, 'increase')} style={styles.cartAddButton}>
+                <Text style={styles.cartAddButtonText}>+</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => updateQuantity(item.id, 'decrease')} style={styles.cartAddButton}>
+                <Text style={styles.cartAddButtonText}>-</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => removeFromCart(item.id)} style={styles.cartRemoveButton}>
+                <Text style={styles.cartRemoveButtonText}>Remove</Text>
+              </TouchableOpacity>
             </View>
           </View>
         )}
@@ -36,14 +43,5 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  product: { marginBottom: 15 },
-  quantityControls: { flexDirection: 'row', justifyContent: 'space-between' },
-  total: { fontSize: 18, marginTop: 20 },
-  checkoutButton: { padding: 10, backgroundColor: 'green', marginTop: 20 },
-  checkoutButtonText: { color: 'white', textAlign: 'center' },
-});
 
 export default CartScreen;
