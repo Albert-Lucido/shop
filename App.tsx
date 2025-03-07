@@ -19,7 +19,7 @@ export default function App() {
             headerTintColor: '#FFFFFF',
           }}
         >
-          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Product List' }} />
+          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
           <Stack.Screen name="Cart" component={CartScreen} options={{ title: 'Shopping Cart' }} />
           <Stack.Screen name="Checkout" component={CheckoutScreen} options={{ title: 'Checkout' }} />
         </Stack.Navigator>
