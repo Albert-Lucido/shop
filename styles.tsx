@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
   // Safe Area View for all screens
   safeArea: {
     flex: 1,
-    backgroundColor: '#ffe6f2',
+    backgroundColor: '#ffe6f2', 
   },
 
   // Home Screen Styles
@@ -19,6 +19,7 @@ export const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: '#4A0072', 
+    textAlign: 'center',
     marginBottom: 16,
     textTransform: 'uppercase',
     letterSpacing: 2,
@@ -96,7 +97,7 @@ export const styles = StyleSheet.create({
   cartContainer: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#ffe6f2',
+    backgroundColor: '#ffe6f2', 
   },
   cartProduct: {
     flexDirection: 'row',
