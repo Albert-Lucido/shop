@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Button, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
 import { useCart, Product } from './information';
-import { styles } from '../styles'; // Importing styles from the styles.ts file
+import { styles } from '../styles';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface CartScreenProps {
   navigation: any;
@@ -14,33 +15,66 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
+  const handleCheckoutNavigation = () => {
+    if (cart.length === 0) {
+      Alert.alert('Cart is empty', 'You cannot proceed to checkout with an empty cart.');
+    } else {
+      navigation.navigate('Checkout');
+    }
+  };
+
   return (
-    <View style={styles.cartContainer}>
-      <FlatList
-        data={cart}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.cartProduct}>
-            <Text style={styles.cartProductText}>{item.name} - ${item.price} x {item.quantity}</Text>
-            <View style={styles.cartControls}>
-              <TouchableOpacity onPress={() => updateQuantity(item.id, 'increase')} style={styles.cartAddButton}>
-                <Text style={styles.cartAddButtonText}>+</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => updateQuantity(item.id, 'decrease')} style={styles.cartAddButton}>
-                <Text style={styles.cartAddButtonText}>-</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => removeFromCart(item.id)} style={styles.cartRemoveButton}>
-                <Text style={styles.cartRemoveButtonText}>Remove</Text>
-              </TouchableOpacity>
+    <SafeAreaView style={styles.cartContainer}>
+      {cart.length === 0 ? (
+        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+      ) : (
+        <FlatList
+          data={cart}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }: { item: Product }) => (
+            <View style={styles.cartProduct}>
+              {/* Product Image (Left) */}
+              <Image source={item.image} style={styles.cartProductImage} />
+
+              {/* Product Info (Middle) */}
+              <View style={styles.cartProductInfo}>
+                <Text style={styles.cartProductText}>{item.name}</Text>
+                <Text style={styles.cartProductDetails}>Price: ${item.price}</Text>
+                <Text style={styles.cartProductDetails}>Quantity: {item.quantity}</Text>
+              </View>
+
+              {/* Buttons (Right) */}
+              <View style={styles.cartControls}>
+                <TouchableOpacity onPress={() => updateQuantity(item.id, 'increase')} style={styles.cartButton}>
+                  <Text style={styles.cartButtonText}>+</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => updateQuantity(item.id, 'decrease')} style={styles.cartButton}>
+                  <Text style={styles.cartButtonText}>-</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => removeFromCart(item.id)} style={styles.cartButton}>
+                  <Text style={styles.cartButtonText}>X</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        )}
-      />
-      <Text style={styles.total}>Total: ${calculateTotal()}</Text>
-      <TouchableOpacity onPress={() => navigation.navigate('Checkout')} style={styles.checkoutButton}>
-        <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
-      </TouchableOpacity>
-    </View>
+          )}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
+
+      {}
+      <View style={styles.cartFooter}>
+        <Text style={styles.total}>Total: ${calculateTotal()}</Text>
+        <TouchableOpacity
+          onPress={handleCheckoutNavigation}
+          style={[styles.checkoutButton, cart.length === 0 && styles.disabledButton]}
+          disabled={cart.length === 0}
+        >
+          <Text style={styles.checkoutButtonText}>Checkout</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 

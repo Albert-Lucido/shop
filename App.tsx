@@ -12,10 +12,16 @@ export default function App() {
   return (
     <CartProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Cart" component={CartScreen} />
-          <Stack.Screen name="Checkout" component={CheckoutScreen} />
+        <Stack.Navigator 
+          initialRouteName="Home"
+          screenOptions={{ 
+            headerStyle: { backgroundColor: '#3E1251' },
+            headerTintColor: '#FFFFFF',
+          }}
+        >
+          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Product List' }} />
+          <Stack.Screen name="Cart" component={CartScreen} options={{ title: 'Shopping Cart' }} />
+          <Stack.Screen name="Checkout" component={CheckoutScreen} options={{ title: 'Checkout' }} />
         </Stack.Navigator>
       </NavigationContainer>
     </CartProvider>

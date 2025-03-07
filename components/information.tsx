@@ -1,72 +1,72 @@
-import React, { createContext, useState, ReactNode, useContext } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-// Define the types for Product and Cart Context
 export interface Product {
   id: string;
   name: string;
   price: number;
   quantity: number;
+  description: string;
+  image: any;
 }
+
 
 interface CartContextType {
   cart: Product[];
   addToCart: (product: Product) => void;
-  updateQuantity: (productId: string, type: 'increase' | 'decrease') => void;
-  removeFromCart: (productId: string) => void;
+  updateQuantity: (id: string, action: 'increase' | 'decrease') => void;
+  removeFromCart: (id: string) => void;
+  clearCart: () => void; 
 }
 
-interface CartProviderProps {
-  children: ReactNode;
-}
+const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// Create the Context with default value as undefined
-export const CartContext = createContext<CartContextType | undefined>(undefined);
-
-// Context provider with safe handling of cart
-export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<Product[]>([]);
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
-      const existingProductIndex = prevCart.findIndex((item) => item.id === product.id);
-      if (existingProductIndex !== -1) {
-        const updatedCart = [...prevCart];
-        updatedCart[existingProductIndex].quantity += 1;
-        return updatedCart;
+      const existingItem = prevCart.find((item) => item.id === product.id);
+      if (existingItem) {
+        return prevCart.map((item) =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
       } else {
         return [...prevCart, { ...product, quantity: 1 }];
       }
     });
   };
 
-  const updateQuantity = (productId: string, type: 'increase' | 'decrease') => {
-    setCart((prevCart) => {
-      return prevCart.map((item) => {
-        if (item.id === productId) {
-          const updatedQuantity = type === 'increase' ? item.quantity + 1 : item.quantity - 1;
-          return { ...item, quantity: updatedQuantity > 0 ? updatedQuantity : 1 };
-        }
-        return item;
-      });
-    });
+  const updateQuantity = (id: string, action: 'increase' | 'decrease') => {
+    setCart((prevCart) =>
+      prevCart
+        .map((item) =>
+          item.id === id
+            ? { ...item, quantity: action === 'increase' ? item.quantity + 1 : item.quantity - 1 }
+            : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
   };
 
-  const removeFromCart = (productId: string) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+  const removeFromCart = (id: string) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+  };
+
+  const clearCart = () => {
+    setCart([]); 
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, updateQuantity, removeFromCart }}>
+    <CartContext.Provider value={{ cart, addToCart, updateQuantity, removeFromCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );
 };
 
-// Custom hook to use CartContext and avoid undefined errors
-export const useCart = (): CartContextType => {
+export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {
-    throw new Error("useCart must be used within a CartProvider");
+    throw new Error('useCart must be used within a CartProvider');
   }
   return context;
 };
